@@ -1,5 +1,7 @@
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.Queue;
 import java.util.Set;
 import java.util.Stack;
 
@@ -9,9 +11,7 @@ import models.Maquina;
 public class App {
     public static void main(String[] args) throws Exception {
         List<Maquina> maquinas = crearMaquinas();
-
     }
-
     static List<Maquina> crearMaquinas() {
 
         List<Maquina> maquinas = Arrays.asList(
@@ -65,7 +65,37 @@ public class App {
                 new Maquina("Nodo7", "23.248.75.5", Arrays.asList(18, 28, 10, 27, 29)),
                 new Maquina("Nodo6", "169.238.150.174", Arrays.asList(6, 14, 3)),
                 new Maquina("DB13", "71.248.50.86", Arrays.asList(17, 11, 12)));
+
+        MaquinaController controller = new MaquinaController();
+
+        Stack<Maquina> filtradas = controller.filtrarPorSubred(maquinas, 150);
+        System.out.println("\n=============METODO A. Filtrar por subred >150==========================");
+        for (Maquina m : filtradas) {
+            System.out.println(m);
+        }
+
+        Set<Maquina> ordenadas = controller.ordenarPorSubred(filtradas);
+        System.out.println("\n=============METODO B. Ordenar por subred DESC y nombre ASC=============");
+        for (Maquina m : ordenadas) {
+            System.out.println(m);
+        }
+
+        Map<Integer, Queue<Maquina>> agrupadas = controller.agruparPorRiesgo(maquinas);
+        System.out.println("\n=============METODO C. Agrupar por riesgo=============");
+        for (Map.Entry<Integer, Queue<Maquina>> entry : agrupadas.entrySet()) {
+            System.out.println("Riesgo " + entry.getKey() + ":");
+            for (Maquina m : entry.getValue()) {
+                System.out.println("  " + m);
+            }
+        }
+
+        Stack<Maquina> explotadas = controller.explotarGrupo(agrupadas);
+        System.out.println("\n=============METODO D. Explorar Grupo de mayor riesgo (en orden LIFO)=============");
+        for (Maquina m : explotadas) {
+            System.out.println(m);
+        }
         return maquinas;
 
     }
 }
+
